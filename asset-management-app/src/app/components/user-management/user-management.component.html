@@ -1,0 +1,337 @@
+<div class="pagetitle">
+    <h1>Assets</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item">Configuration</li>
+        <li class="breadcrumb-item active">User Management</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">User Management</h3>
+            
+            <p>
+              <button type="button" (click)="trxnSuccess=false;resetData()" class="btn btn-primary" data-toggle="modal" data-target="#userModal" data-whatever="@mdo">New User</button>
+            </p>
+
+            <!-- Table with stripped rows -->
+            <div class="table-responsive">
+            <app-loading-screen *ngIf="isLoading"></app-loading-screen>
+
+
+            <!--angular material-->
+            <mat-form-field class="example-full-width">
+              <input matInput #filterInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+            </mat-form-field>
+
+            <table mat-table [dataSource]="dataSource" #matSort class="full-width-table full-height-table" >
+              <ng-container matColumnDef="username">
+                <th mat-header-cell *matHeaderCellDef>Username</th>
+                <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+              </ng-container>
+              <ng-container matColumnDef="first_name">
+                <th mat-header-cell *matHeaderCellDef>First Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.first_name }}</td>
+              </ng-container>
+              <ng-container matColumnDef="last_name">
+                <th mat-header-cell *matHeaderCellDef>Last Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.last_name }}</td>
+              </ng-container>
+               <ng-container matColumnDef="user_role">
+                <th mat-header-cell *matHeaderCellDef>Role</th>
+                <td mat-cell *matCellDef="let element">{{ element.user_role }}</td>
+              </ng-container>
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let element"><button type="button" (click)="viewUser(element.id)" class="btn btn-primary" data-toggle="modal" data-target="#userModal" data-whatever="@mdo">View User</button> &nbsp; <button type="button" (click)="viewSelectedAccessRole(element.user_role)" class="btn btn-primary" data-toggle="modal" data-target="#roleModal" data-whatever="@mdo">Manage Role</button></td>
+              </ng-container>
+              <!--
+              <ng-container matColumnDef="asset_model">
+                <th mat-header-cell *matHeaderCellDef>Model/Brand</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_model }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_serial_no">
+                <th mat-header-cell *matHeaderCellDef>Serial No</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_serial_no }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_amount">
+                <th mat-header-cell *matHeaderCellDef>Amount</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_amount }}</td>
+              </ng-container>
+              <ng-container matColumnDef="supplier_id">
+                <th mat-header-cell *matHeaderCellDef>Supplier</th>
+                <td mat-cell *matCellDef="let element">{{ element.supplier_id }}</td>
+              </ng-container>
+              <ng-container matColumnDef="employee_id">
+                <th mat-header-cell *matHeaderCellDef>EID</th>
+                <td mat-cell *matCellDef="let element">{{ element.employee_id}}</td>
+              </ng-container>
+              <ng-container matColumnDef="employee_name">
+                <th mat-header-cell *matHeaderCellDef>Assigned To</th>
+                <td mat-cell *matCellDef="let element">{{ element.employee_name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_location">
+                <th mat-header-cell *matHeaderCellDef>Location</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_location }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_status }}</td>
+              </ng-container> -->
+
+              <!-- Additional columns as needed -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            
+            <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+            <mat-paginator
+            #paginator
+            [pageSizeOptions]="[5, 10, 20]"
+            showFirstLastButtons
+          ></mat-paginator>
+          
+            <!--end of angular material-->
+            
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+   <!-- User Modal -->
+   <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">User</h5>
+          <button type="button"  class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                      <label for="asset-name" class="col-form-label">Username</label>
+                      <input type="text" class="form-control" [(ngModel)]="selectedUser.username">    
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="form-group">
+                    <label for="asset-name" class="col-form-label">Password</label>
+                    <input type="password" class="form-control" [(ngModel)]="selectedUser.password">    
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">   
+                  <div class="form-group">
+                    <label for="serial-num" class="col-form-label">First Name</label>
+                    <input type="text" class="form-control" [(ngModel)]="selectedUser.first_name">    
+                  </div>  
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label for="serial-num" class="col-form-label">Last Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="selectedUser.last_name">    
+                </div>  
+              </div>
+            </div>
+            <div class="row">
+              <label for="serial-num" class="col-form-label">Role</label>
+              <div class="col-lg-12 d-flex">
+                <div class="dropdown" id="statusSelect">
+                  <button class="btn btn-primary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ selectedRole || 'Select Role' }}
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" *ngFor="let option of roles" (click)="selectedRole = option">{{ option }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>  
+            <div class="row">
+              <div class="alert alert-success col-lg-12" *ngIf="trxnSuccess && !isLoading">
+                <center><strong>Transaction has been succesfully executed</strong></center>
+              </div>
+              <div class="alert alert-danger col-lg-12" *ngIf="!isCompleteForm && !isLoading">
+                <center><strong>Please complete required details</strong></center>
+              </div>
+              <!-- <div class="d-flex justify-content-center" *ngIf="isLoading;" role="status">
+                <span class="sr-only">Loading...</span>
+              </div> -->
+              <div class="d-flex justify-content-center" *ngIf="isLoading;">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </div>
+            </div>  
+            
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="saveUser()" [disabled]="!canSave">Save</button>
+          <button type="button" class="btn btn-danger" [disabled]="!canSave" data-toggle="modal" data-target="#confirm-delete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--delete modal-->
+  <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Delete Records?
+            </div>
+            <div class="modal-body">
+                Please confirm if you want to delete this user?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger btn-ok" data-dismiss="modal" (click)="deleteUser()">Delete</a>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Role Modal -->
+  <div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Role</h5>
+          <button type="button"  class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-3 d-flex">
+              <label for="serial-num" class="col-form-label">Select Role</label>
+            </div>
+            <div class="col-lg-9">
+              <div class="dropdown" id="statusSelect">
+                <button class="btn btn-primary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ selectedRole || 'Select Role' }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" *ngFor="let option of roles" (click)="selectedRole = option">{{ option }}</a>
+                </div>
+              </div>
+            </div>
+           </div>
+           <div class="row">
+ 
+
+           </div>
+           <div class="row">
+            <div id="accordion">
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseCurrentAccess" aria-expanded="false" aria-controls="collapseTwo">
+                      <span>Existing Access</span>
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseCurrentAccess" class="collapse in" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                    <table mat-table [dataSource]="dataSourceUserAccess" class="full-width-table full-height-table" >
+                      <ng-container matColumnDef="module_name">
+                        <th mat-header-cell *matHeaderCellDef>Module</th>
+                        <td mat-cell *matCellDef="let element">{{ element.module_name }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="transaction">
+                        <th mat-header-cell *matHeaderCellDef>Allowed Transaction</th>
+                        <td mat-cell *matCellDef="let element">{{ element.transaction }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                        <td mat-cell *matCellDef="let element"><button type="button" (click)="viewSelectedAccessRole()" class="btn btn-primary" data-toggle="modal" data-target="#userModal" data-whatever="@mdo">View User</button> &nbsp; <button type="button" (click)="viewUser(element.id)" class="btn btn-primary" data-toggle="modal" data-target="#roleModal" data-whatever="@mdo">Manage Role</button></td>
+                      </ng-container>
+         
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsAccess"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsAccess;"></tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseManageAccess" aria-expanded="false" aria-controls="collapseTwo">
+                      <span>Manage Access</span>
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseManageAccess" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-lg-5">
+                        <label for="serial-num" class="col-form-label">Module</label>
+                      </div>
+                      <div class="col-lg-7">
+                        <div class="dropdown" id="statusSelect">
+                          <button class="btn btn-primary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ selectedModule || 'Select Module' }}
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" *ngFor="let option of modules" (click)="selectedModule = option">{{ option }}</a>
+                          </div>
+                        </div>
+                      </div>
+                     </div>
+                     <div class="row">
+                      <div class="col-lg-5">
+                        <label for="serial-num" class="col-form-label">Permission</label>
+                      </div>
+                      <div class="col-lg-7">
+                        <div class="dropdown" id="statusSelect">
+                          <button class="btn btn-primary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ selectedPermission || 'Select Permission' }}
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" *ngFor="let option of permission" (click)="selectedPermission = option">{{ option }}</a>
+                          </div>
+                        </div>
+                      </div>
+                     </div>
+                     <div class="modal-footer"> 
+                        <button type="button" class="btn btn-primary" (click)="saveRolePermission()">Save</button>
+                     </div>
+                  </div>
+                </div>
+              </div>
+
+          </div>
+
+           </div>  
+ 
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+
+  

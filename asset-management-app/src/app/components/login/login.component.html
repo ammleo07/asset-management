@@ -1,0 +1,109 @@
+<!-- Section: Design Block -->
+<section class="">
+    <!-- Jumbotron -->
+    <div class="px-4 py-5 px-md-5 text-center text-lg-start" style="background-color: hsl(0, 0%, 96%)">
+      <div class="container">
+        <div class="row gx-lg-5 align-items-center">
+          <div class="col-lg-6 mb-5 mb-lg-0">
+            <h1 class="my-5 display-3 fw-bold ls-tight">
+              The best way <br />
+              <span class="text-primary">to keep your asset</span>
+              <!-- <img id="logo" src="/assets/img/logo.jpg" alt=""> -->
+            </h1>
+            <p style="color: hsl(217, 10%, 50.8%)">
+              
+            </p>
+          </div>
+  
+          <div class="col-lg-6 mb-5 mb-lg-0">
+            <div class="card">
+              <div class="card-body py-5 px-md-5">
+                <form>
+                  <!-- 2 column grid layout with text inputs for the first and last names -->
+                  <!-- <div class="row">
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        <input type="text" id="form3Example1" class="form-control" />
+                        <label class="form-label" for="form3Example1">First name</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        <input type="text" id="form3Example2" class="form-control" />
+                        <label class="form-label" for="form3Example2">Last name</label>
+                      </div>
+                    </div>
+                  </div> -->
+                  
+                <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                <p class="mb-5">Please enter your login and password!</p>
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form3Example3">Username</label>
+                    <input type="text" [(ngModel)]="username" [ngModelOptions]="{standalone: true}" id="form3Example3" class="form-control" />
+                    
+                  </div>
+  
+                  <!-- Password input -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form3Example4">Password</label>
+                    <input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" id="form3Example4" class="form-control" />    
+                  </div>
+                  <div class="alert alert-danger" *ngIf="!loginSuccess">
+                    <strong>Invalid Credentials!</strong> Please input your username and password again.
+                  </div>
+                  <!-- Checkbox -->
+                  <!-- <div class="form-check d-flex justify-content-center mb-4">
+                    <input class="form-check-input me-2" type="checkbox" value="" id="form2Example33" checked />
+                    <label class="form-check-label" for="form2Example33">
+                      Subscribe to our newsletter
+                    </label>
+                  </div> -->
+                  <div *ngIf="changePswd">
+                    <div class="alert alert-success" >
+                      <strong>Change your password</strong> Please change your password now.
+                    </div>
+                    <div class="form-outline mb-4">
+                      <label class="form-label" for="form3Example4">New Password</label>
+                      <input type="password" [(ngModel)]="new_password" [ngModelOptions]="{standalone: true}" id="form3Example4" class="form-control" />    
+                    </div>
+                    <!-- Submit button -->
+                    <button (click)="changePassword()" class="btn btn-primary btn-block mb-4">
+                      Change Now
+                    </button>
+                  </div>
+  
+                  <!-- Submit button -->
+                  <button *ngIf="!changePswd" (click)="authenticate()" class="btn btn-primary btn-block mb-4">
+                    Log in
+                  </button>
+  
+                  <!-- Register buttons -->
+                  <!-- <div class="text-center">
+                    <p>or sign up with:</p>
+                    <button type="button" class="btn btn-link btn-floating mx-1">
+                      <i class="fab fa-facebook-f"></i>
+                    </button>
+  
+                    <button type="button" class="btn btn-link btn-floating mx-1">
+                      <i class="fab fa-google"></i>
+                    </button>
+  
+                    <button type="button" class="btn btn-link btn-floating mx-1">
+                      <i class="fab fa-twitter"></i>
+                    </button>
+  
+                    <button type="button" class="btn btn-link btn-floating mx-1">
+                      <i class="fab fa-github"></i>
+                    </button>
+                  </div> -->
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Jumbotron -->
+  </section>
+  <!-- Section: Design Block -->

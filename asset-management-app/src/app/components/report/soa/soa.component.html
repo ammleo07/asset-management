@@ -1,0 +1,25 @@
+<h4>{{statementNo}}</h4>
+<table class="table datatable" >    
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Transaction</th>
+        <th scope="col">Ref No</th>
+        <th scope="col">Gross Amount</th>
+        <th scope="col">discount</th>
+        <th scope="col">VAT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      <tr *ngFor="let trxn of transactions">  
+        <th scope="row">{{trxn.trans_date}}</th>
+        <td>{{trxn.trans_desc}}</td>
+        <td>{{trxn.ref_no}}</td>
+        <td>{{trxn.gross_amount}}</td>
+        <td>{{trxn.discount}}</td>
+        <td>{{trxn.vat_amount}}</td>
+        <!-- <td><button type="button" (click)="viewDelivery(delivery.transactionNumber)" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">View Delivery</button></td> -->
+      </tr>
+    </tbody>
+  </table>

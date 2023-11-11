@@ -1,0 +1,108 @@
+<div class="pagetitle">
+    <h1>sale</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item">Transaction</li>
+        <li class="breadcrumb-item active">sale</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Sales</h5>
+            <p>
+              <button type="button" (click)="newSale()" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">New Sale</button>
+            </p>
+
+            <!-- Table with stripped rows -->
+            <table class="table datatable" *ngIf="sales">
+              <thead>
+                <tr>
+                  <th scope="col">Transaction Number</th>
+                  <th scope="col">Transaction Source</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Process By</th>
+                  <th scope="col">Transaction Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sale of sales">
+                  <th scope="row">{{sale.transactionNumber}}</th>
+                  <td>{{sale.transactionSource}}</td>
+                  <td>{{sale.quantity}}</td>
+                  <td>{{sale.transactedBy}}</td>
+                  <td>{{sale.transactionTimeStamp}}</td>
+                  <td><button type="button" (click)="viewSale(sale.transactionNumber)" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">View sale</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+   <!-- Modal -->
+   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New sale</h5>
+          <button type="button"  class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Source:</label>
+              <input type="text" [(ngModel)]="trxnSource" [ngModelOptions]="{standalone: true}" class="form-control" id="source">
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Products:</label>
+              <table class="table datatable" *ngIf="products">
+                <thead>
+                  <tr>
+                    <th scope="col">Product Code</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of products; let i = index">
+                    <th scope="row">
+                      <!-- <input type="text" class="form-control" [(ngModel)]="products[i].productCode" [ngModelOptions]="{standalone: true}">  -->
+                      <app-auto-suggestion-product [prodCode]="products[i].productCode" (returnedProductEvent)="receivedProductCode(i,$event)"></app-auto-suggestion-product>
+                    
+                    </th>
+                    <td><input type="text" class="form-control" [(ngModel)]="products[i].quantity" [ngModelOptions]="{standalone: true}"></td>
+                    <td><input type="text" class="form-control" [(ngModel)]="products[i].price" [ngModelOptions]="{standalone: true}"></td>
+                    <td>
+                      <button type="button" (click)="onAddProduct()" [disabled]="!canSave" class="btn btn-primary">+</button>
+                      <button *ngIf="i != 0"  type="button" (click)="removeProduct(i)" [disabled]="!canSave" class="btn btn-primary">-</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="saveSale()" [disabled]="!canSave">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+
+  

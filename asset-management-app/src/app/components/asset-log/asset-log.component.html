@@ -1,0 +1,387 @@
+<div class="pagetitle">
+    <h1>Assets</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item">Transaction</li>
+        <li class="breadcrumb-item active">Asset Log</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">Asset Log</h3>
+            <p>
+              <button *ngIf="hasWriteAccess()" type="button" (click)="assetOperation='New Asset';trxnSuccess=false;resetData()" class="btn btn-primary" data-toggle="modal" data-target="#assetModal" data-whatever="@mdo">New asset</button>
+            </p>
+
+            <!-- Table with stripped rows -->
+            <div class="table-responsive">
+            <app-loading-screen *ngIf="isLoading"></app-loading-screen>
+            <!-- <table class="table datatable" *ngIf="assets">
+              <thead>
+                <tr>
+                  <th scope="col">Transaction ID</th>
+                  <th scope="col">Asset Name</th>
+                  <th scope="col">Model/Brand</th>
+                  <th scope="col">Serial No</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Supplier</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Assigned to</th>
+                  <th scope="col">Location</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let asset of assets">
+                  <th scope="row">{{asset.transaction_id}}</th>
+                  <td>{{asset.asset_name}}</td>
+                  <td>{{asset.asset_model}}</td>
+                  <td>{{asset.asset_serial_no}}</td>
+                  <td>{{asset.asset_amount}}</td>
+                  <td>{{asset.supplier_id}}</td>
+                  <td>{{asset.asset_status}}</td>
+                  <td>{{asset.employee_id}} - {{asset.employee_name}}</td>
+                  <td>{{asset.asset_location}}</td>
+                  <td><button type="button" (click)="viewAsset(asset.transaction_id)" class="btn btn-primary" data-toggle="modal" data-target="#assetModal" data-whatever="@mdo">View asset</button></td>
+                </tr>
+              </tbody>
+            </table> -->
+            <!-- End Table with stripped rows -->
+
+            <!--angular material-->
+            <mat-form-field class="example-full-width">
+              <input matInput #filterInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+            </mat-form-field>
+            
+            <!-- <mat-table [dataSource]="dataSource" matSort>
+              <ng-container *ngFor="let column of displayedColumns; let i = index" [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ column }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element[column] }} </mat-cell>
+              </ng-container>
+            
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table> -->
+
+            <table #assetTable id="assetTable" mat-table [dataSource]="dataSource" matSort class="full-width-table full-height-table" >
+              <ng-container matColumnDef="transaction_id">
+                <th mat-header-cell *matHeaderCellDef>Transaction ID</th>
+                <td mat-cell *matCellDef="let element">{{ element.transaction_id }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_name">
+                <th mat-header-cell *matHeaderCellDef>Asset Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_name }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_model">
+                <th mat-header-cell *matHeaderCellDef>Model/Brand</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_model }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_serial_no">
+                <th mat-header-cell *matHeaderCellDef>Serial No</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_serial_no }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_amount">
+                <th mat-header-cell *matHeaderCellDef>Amount</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_amount }}</td>
+              </ng-container>
+              <ng-container matColumnDef="supplier_id">
+                <th mat-header-cell *matHeaderCellDef>Supplier</th>
+                <td mat-cell *matCellDef="let element">{{ element.supplier_id }}</td>
+              </ng-container>
+              <ng-container matColumnDef="employee_id">
+                <th mat-header-cell *matHeaderCellDef>EID</th>
+                <td mat-cell *matCellDef="let element">{{ element.employee_id}}</td>
+              </ng-container>
+              <ng-container matColumnDef="employee_name">
+                <th mat-header-cell *matHeaderCellDef>Assigned To</th>
+                <td mat-cell *matCellDef="let element">{{ element.employee_name}}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_location">
+                <th mat-header-cell *matHeaderCellDef>Location</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_location }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asset_status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let element">{{ element.asset_status }}</td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let element"><button type="button" (click)="viewAsset(element.transaction_id)" class="btn btn-primary" data-toggle="modal" data-target="#assetModal" data-whatever="@mdo">View asset</button></td>
+              </ng-container>
+              <!-- Additional columns as needed -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            
+            <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+            <mat-paginator
+            #paginator
+            [pageSizeOptions]="[5,10,20]"
+            showFirstLastButtons
+          ></mat-paginator>
+          
+            <!--end of angular material-->
+            
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+   <!-- Modal -->
+   <div class="modal fade" id="assetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{assetOperation}}</h5>
+          <button type="button"  class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+
+        </div>
+        <div class="modal-body">
+
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="form-group">
+                  <img [src]="qrCodeUrl" class="qr" alt="QR Code">   
+                </div>   
+              </div>
+                <div class="col-lg-9">
+                  <!-- <div class="form-group">
+                      <label for="asset-name" class="col-form-label">Asset Name<span class="require-field">*</span></label>
+                      <input type="text" class="form-control" [(ngModel)]="asset.assetName" required>    
+                  </div> -->
+                  <div class="form-group">
+                    <label for="supplier">Asset Name</label>
+                    <select class="form-control form-control-sm"  [(ngModel)]="asset.assetName">
+                      <option *ngFor="let option of assetName" [ngValue]="option.lov_value">{{option.lov_value}}</option>
+                    </select>
+                  </div>    
+                  <div class="form-group">
+                    <label for="serial-num" class="col-form-label">Serial No<span class="require-field">*</span></label>
+                    <input type="text" class="form-control" [(ngModel)]="asset.serialNum" (blur)="isSerialNumberExist(asset.serialNum)">    
+                  </div> 
+                  <div id="invalid-pswd" class="alert alert-danger" *ngIf="asset.serialNum && isSerialNumExist && assetOperation==='New Asset'">
+                    <strong>Serial Number Already used!</strong> Please enter new serial number again.
+                  </div>  
+ 
+                </div>
+
+                <!-- <div class="col-lg-4">
+
+                </div> -->
+
+            </div>
+            <div class="row">
+              <div class="col-lg-12">  
+                <div class="form-group">
+                  <label for="serial-num" class="col-form-label">Specification</label>
+                  <input type="text" class="form-control" [(ngModel)]="asset.specification">    
+                </div>
+              </div>  
+            </div>
+            <div class="row">
+                <div class="col-lg-3">   
+                    <div class="form-group">
+                        <!-- <label for="brand-name" class="col-form-label">Brand/Model Name:</label>
+                        <input type="text" class="form-control" [(ngModel)]="asset.brandName">     -->
+                        <!-- <div class="col-lg-7 d-flex justify-content-center align-items-center">
+                          <div class="dropdown dropdowns-margin" id="selectSupplier">
+                            <button class="btn btn-primary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              {{ asset.supplier || 'Select Supplier' }}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" *ngFor="let option of suppliers" (click)="asset.supplier = option">{{ option }}</a>
+                            </div>
+                          </div>
+                        </div> -->
+                        <label for="brand">Model/Brand</label>
+                        <select class="form-control form-control-sm"  [(ngModel)]="asset.brandName">
+                          <option *ngFor="let option of brands" [ngValue]="option.lov_value">{{option.lov_value}}</option>
+                        </select>
+                    </div>  
+                </div>
+                <div class="col-lg-4">
+                    <!-- <div class="form-group"> -->
+                        <!-- <label for="supplier" class="col-form-label">Supplier:</label> -->
+                        <!-- <input type="text" class="form-control" [(ngModel)]="asset.supplier"> -->
+                        <!-- <div class="col-lg-7 col-sm-12 d-flex justify-content-center align-items-center dropdowns-margin">
+                          <div class="dropdown" id="selectSupplier">
+                            <button class="btn btn-primary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              {{ asset.supplier || 'Select Supplier' }}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" *ngFor="let option of suppliers" (click)="asset.supplier = option">{{ option }}</a>
+                            </div>
+                          </div>
+                        </div> -->
+                        <div class="form-group">
+                          <label for="supplier">Supplier</label>
+                          <select class="form-control form-control-sm"  [(ngModel)]="asset.supplier">
+                            <option *ngFor="let option of suppliers" [ngValue]="option.lov_value">{{option.lov_value}}</option>
+                          </select>
+                        </div>    
+                    <!-- </div>   -->
+                </div>
+                <div class="col-lg-5">
+                  <div class="row">
+                    <div class="form-group col-lg-5">
+                        <label for="amount" class="col-form-label">Amount<span class="require-field">*</span></label>
+                        <input type="number" id="amount" class="form-control form-control-sm" [(ngModel)]="asset.amount">    
+                    </div> 
+                    <div class="col-lg-7 d-flex justify-content-center align-items-center">
+                        <div class="dropdown dropdowns" id="statusSelect">
+                          <button class="btn btn-primary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ selectedStatus || 'Select an option' }}
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" *ngFor="let option of statuses" (click)="selectedStatus = option">{{ option }}</a>
+                          </div>
+                        </div>
+                    </div>
+                  </div>    
+                </div>
+
+            </div>    
+            <div id="accordion">
+                <div class="card">
+                  <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <span *ngIf="asset.employeeID">View Asset Assignment</span>
+                        <span *ngIf="!asset.employeeID">Click here to assign this asset</span>
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4">   
+                                <div class="form-group">
+                                    <label for="brand-name" class="col-form-label">Employee ID</label>
+                                    <input type="text" class="form-control" [(ngModel)]="asset.employeeID">    
+                                </div>  
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <label for="supplier" class="col-form-label">Name:</label>
+                                    <input type="text" class="form-control" [(ngModel)]="asset.employeeName">    
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="row">
+                          <!-- <div class="col-lg-12">   
+                              <div class="form-group">
+                                  <label for="brand-name" class="col-form-label">Location</label>
+                                  <input type="text" class="form-control" [(ngModel)]="asset.assetLocation">    
+                              </div>  
+                          </div> -->
+
+                          <div class="col-lg-8 d-flex">
+                            <label for="supplier" class="col-form-label">Location: </label>
+                            <div class="dropdown">
+                              <button class="btn btn-primary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ selectedLocation || 'Select location' }}
+                              </button>
+                              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" *ngFor="let option of locations" (click)="selectedLocation = option.lov_value">{{ option.lov_value }}</a>
+                              </div>
+                            </div>
+                        </div>
+
+                      </div>      
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+          <!-- <form>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Source:</label>
+              <input type="text" [(ngModel)]="trxnSource" [ngModelOptions]="{standalone: true}" class="form-control" id="source">
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Products:</label>
+              <table class="table datatable" *ngIf="products">
+                <thead>
+                  <tr>
+                    <th scope="col">Product Code</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of products; let i = index">
+ 
+                    <th>
+  
+                      <app-auto-suggestion-product [prodCode]="products[i].productCode" (returnedProductEvent)="receivedProductCode(i,$event)"></app-auto-suggestion-product>
+                    </th>
+                    <td><input type="text" class="form-control" [(ngModel)]="products[i].quantity" [ngModelOptions]="{standalone: true}"></td>
+                    <td><input type="text" class="form-control" [(ngModel)]="products[i].price" [ngModelOptions]="{standalone: true}"></td>
+                    <td>
+                      <button type="button" (click)="onAddProduct()" [disabled]="!canSave" class="btn btn-primary">+</button>
+                      <button *ngIf="i != 0"  type="button" (click)="removeProduct(i)" [disabled]="!canSave" class="btn btn-primary">-</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form> -->
+          <div class="row">
+            <div class="alert alert-success col-lg-12" *ngIf="trxnSuccess && !isLoading">
+              <center><strong>Transaction has been succesfully executed</strong></center>
+            </div>
+            <div class="alert alert-danger col-lg-12" *ngIf="!isCompleteForm && !isLoading">
+              <center><strong>Please complete required details</strong></center>
+            </div>
+            <!-- <div class="d-flex justify-content-center" *ngIf="isLoading;" role="status">
+              <span class="sr-only">Loading...</span>
+            </div> -->
+            <div class="d-flex justify-content-center" *ngIf="isLoading;">
+              <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+          <button type="button" class="btn btn-primary" (click)="saveAsset()" [disabled]="!hasWriteAccess()">Save</button>
+          <button type="button" class="btn btn-danger margin-1" [disabled]="!hasWriteAccess()" data-toggle="modal" data-target="#confirm-delete">Delete asset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--delete-->
+  <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Delete Records?
+            </div>
+            <div class="modal-body">
+                Please confirm if you want to delete this asset?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger btn-ok" data-dismiss="modal" (click)="deleteAsset()">Delete</a>
+            </div>
+        </div>
+    </div>
+  </div>
+  </section>
+
+  

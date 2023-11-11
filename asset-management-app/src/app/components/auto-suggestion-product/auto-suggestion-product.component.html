@@ -1,0 +1,4 @@
+                      <input type="text" class="form-control" placeholder="Search product code" [(ngModel)]="selectedItem" [ngModelOptions]="{standalone: true}" (input)="suggest()">
+                      <ul class="suggestion-list" *ngIf="suggestions">
+                        <li *ngFor="let s of suggestions" (click)="onSuggestionClick(s)">{{s}}</li>
+                      </ul>

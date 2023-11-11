@@ -1,0 +1,16 @@
+{
+ "name": "asset-management",
+  "version": "1.0.0",
+  "description": "",
+  "main": "api.js",
+  "keywords": [],
+  "author": "Albert",
+  "scripts": {
+    "dev": "nodemon api.js",
+    "start": "node api.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.1"
+  }
+}
